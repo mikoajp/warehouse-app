@@ -21,7 +21,6 @@ class StockMovement
 
     #[ORM\Column]
     #[Assert\NotNull]
-    #[Assert\GreaterThan(0)]
     private ?int $quantity = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
