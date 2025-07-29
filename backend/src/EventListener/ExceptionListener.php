@@ -13,7 +13,7 @@ readonly class ExceptionListener
 {
     public function __construct(
         private LoggerInterface $logger,
-        private string          $environment
+        private string $environment
     ) {
     }
 

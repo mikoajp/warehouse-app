@@ -80,5 +80,4 @@ class ProductController extends AbstractController
 
         return $this->json(ProductResponse::fromEntity($product));
     }
-
 }

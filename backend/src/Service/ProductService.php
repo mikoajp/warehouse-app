@@ -12,7 +12,7 @@ readonly class ProductService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private ProductRepository      $productRepository,
+        private ProductRepository $productRepository,
     ) {
     }
 
