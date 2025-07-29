@@ -11,6 +11,10 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
   backend:
     build:
@@ -19,14 +23,19 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       DATABASE_URL: "mysql://warehouse_user:warehouse_pass@db:3306/warehouse?serverVersion=8.0&charset=utf8mb4"
       APP_ENV: dev
       APP_SECRET: "dev-secret-key-change-in-production"
-    volumes:
-      - ./backend:/var/www/html
+    # Volume mount wyłączony dla stabilności dependencies
+    # Odkomentuj poniżej jeśli potrzebujesz live reload podczas development
+    # volumes:
+    #   - ./backend:/var/www/html
+    #   - backend_vendor:/var/www/html/vendor
     working_dir: /var/www/html
+    restart: unless-stopped
 
   frontend:
     build:
@@ -34,11 +43,15 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    depends_on:
+      - backend
     volumes:
       - ./frontend:/app
       - /app/node_modules
     environment:
       - REACT_APP_API_URL=http://localhost:8000
+    restart: unless-stopped
 
 volumes:
   db_data:
+  backend_vendor:

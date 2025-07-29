@@ -23,10 +23,11 @@ docker-compose up -d
 
 #### 3. Przygotuj bazę danych
 ```bash
-# Stwórz tabele
+
+docker-compose exec backend php bin/console doctrine:migrations:diff
+
 docker-compose exec backend php bin/console doctrine:migrations:migrate --no-interaction
 
-# Dodaj użytkownika testowego
 docker-compose exec backend php bin/console doctrine:fixtures:load --no-interaction
 ```
 

@@ -1,0 +1,34 @@
+# Cache and logs
+/var/
+/var/cache/
+/var/log/
+/var/sessions/
+
+# Dependencies (będą zainstalowane w kontenerze)
+# /vendor/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Tests
+/tests/
+/phpunit.xml.dist
+
+# Documentation
+README.md
+*.md

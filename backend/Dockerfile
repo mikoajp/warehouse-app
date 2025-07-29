@@ -7,15 +7,28 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libzip-dev \
     && docker-php-ext-configure intl \
-    && docker-php-ext-install pdo pdo_mysql intl zip
+    && docker-php-ext-install pdo pdo_mysql intl zip \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
+COPY composer.json composer.lock ./
+
+RUN composer install --no-interaction --prefer-dist --no-scripts
+
 COPY . .
 
-RUN if [ -f "composer.json" ]; then composer install --no-interaction --prefer-dist --optimize-autoloader; fi
+RUN composer run-script post-install-cmd --no-interaction || true
+
+RUN composer require --dev doctrine/doctrine-fixtures-bundle --no-interaction || true
+RUN composer require --dev symfony/maker-bundle --no-interaction || true
+
+RUN composer dump-autoload --optimize
+
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod +x bin/console
 
 EXPOSE 8000
 
